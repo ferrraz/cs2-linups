@@ -1,131 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>CS2 Lineups</title>
-	<style>
-		body { font-family: Arial, sans-serif; background: #1e1e1e; color: #fff; text-align: center; }
-		select { padding: 8px; margin: 5px; }
-		img { max-width: 80%; margin-top: 20px; border-radius: 12px; box-shadow: 0 0 10px #000; }
-	</style>
+  <meta charset="UTF-8">
+  <title>CS2 Interactive Lineups</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e1e;
+      color: #fff;
+      text-align: center;
+    }
+    .map-container {
+      position: relative;
+      display: inline-block;
+    }
+    .map-container img {
+      max-width: 90%;
+      border-radius: 12px;
+    }
+    .icon {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: red;
+      border-radius: 50%;
+      cursor: pointer;
+      transform: translate(-50%, -50%);
+      border: 2px solid white;
+    }
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #2a2a2a;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px black;
+      display: none;
+      max-width: 500px;
+    }
+    .popup img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    .close-btn {
+      background: #444;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-	<h1>CS2 Lineup Guide</h1>
-	<div>
-	<label>Map:</label>
-		<select id="map">
-			<option value="mirage">Mirage</option>
-			<option value="inferno">Inferno</option>
-			<option value="dust2">Dust 2</option>
-			<option value="overpass">Overpass</option>
-			<option value="ancient">Ancient</option>
-			<option value="nuke">Nuke</option>
-		</select>
+  <h1>CS2 Lineup Guide – Mirage</h1>
+  
+  <div class="map-container">
+    <!-- Background radar -->
+    <img src="images/mirage/radar.png" alt="Mirage Radar">
+    
+    <!-- Example clickable icons -->
+    <div class="icon" style="top: 60%; left: 40%;" onclick="showPopup('window')"></div>
+    <div class="icon" style="top: 70%; left: 20%;" onclick="showPopup('ctspawn')"></div>
+    <div class="icon" style="top: 30%; left: 70%;" onclick="showPopup('jungle')"></div>
+  </div>
 
-		<label>Side:</label>
-		<select id="side">
-			<option value="t">T-Side</option>
-			<option value="ct">CT-Side</option>
-		</select>
+  <!-- Popup modal -->
+  <div id="popup" class="popup">
+    <h2 id="popup-title"></h2>
+    <div id="popup-content"></div>
+    <div class="close-btn" onclick="closePopup()">Close</div>
+  </div>
 
-		<label>Position:</label>
-		<select id="position"></select>
+  <script>
+    const lineups = {
+      window: [
+        { img: "images/mirage/t-spawn-window-smoke.png", desc: "From T-Spawn → Window Smoke (JumpThrow)" },
+        { img: "images/mirage/topmid-window-smoke.png", desc: "From Top Mid → Window Smoke" }
+      ],
+      ctspawn: [
+        { img: "images/mirage/ramp-ctspawn-smoke.png", desc: "From Ramp → CT Smoke" }
+      ],
+      jungle: [
+        { img: "images/mirage/ramp-jungle-smoke.png", desc: "From Ramp → Jungle Smoke" }
+      ]
+    };
 
-		<label>Target:</label>
-		<select id="target"></select>
+    function showPopup(position) {
+      const popup = document.getElementById("popup");
+      const title = document.getElementById("popup-title");
+      const content = document.getElementById("popup-content");
 
-		<label>Utility:</label>
-		<select id="util">
-			<option value="smoke">Smoke</option>
-			<option value="molly">Molotov</option>
-			<option value="flash">Flash</option>
-			<option value="nade">Nade</option>
-		</select>
+      title.innerText = position.toUpperCase();
+      content.innerHTML = "";
 
-		<label>Variant:</label>
-		<select id="variant">
-			<option value="m1">M1 Throw</option>
-			<option value="m2">M2 Throw</option>
-			<option value="m1m2">M1+M2 Throw</option>
-			<option value="jump">JumpThrow</option>
-			<option value="m1m2jump">M1+M2 JumpThrow</option>
-			<option value="wjump">W+JumpThrow</option>
-			<option value="insta">Insta Smoke</option>
-			<option value="crouch">Crouch JumpThrow</option>
-			<option value="m1crouch">M1 Crouch JumpThrow</option>
-			<option value="m2crouch">M2 Crouch JumpThrow</option>
-			<option value="m1m2crouch">M1+M2 Crouch JumpThrow</option>
-		</select>
-	  </div>
+      if (lineups[position]) {
+        lineups[position].forEach(l => {
+          const img = document.createElement("img");
+          img.src = l.img;
+          const p = document.createElement("p");
+          p.innerText = l.desc;
+          content.appendChild(img);
+          content.appendChild(p);
+        });
+      } else {
+        content.innerHTML = "<p>No lineups yet.</p>";
+      }
 
-	  <img id="lineup" src="" alt="Sorry, no lineup. :(">
+      popup.style.display = "block";
+    }
 
-	  <script>
-		const calloutsByMap = {
-			ancient: ["ctspawn","tspawn","long","short","mid","topmid","under","ramp","pit","window","connector","apps","asite","bsite","ct","donut","red","cave","temple","amain"],
-			dust2: ["ctspawn","tspawn","long","short","mid","topmid","under","ramp","pit","window","connector","apps","asite","bsite","stairs","ct","longdoors","bdoors","xbox"],
-			mirage: ["ctspawn","tspawn","long","short","mid","topmid","under","ramp","pit","window","connector","apps","asite","bsite","ct","stairs","tetris","palace","underpalace","kitchen","kitchendoor","ticket"],
-			inferno: ["ctspawn","tspawn","long","short","mid","topmid","under","ramp","pit","window","connector","apps","asite","bsite","ct","banana","1st2nd","coffins","quad"],
-			overpass: ["ctspawn","tspawn","long","short","mid","topmid","under","ramp","pit","window","connector","apps","asite","bsite","ct","sandbags","toilets","bank","bins","walkway","alley","water"],
-			nuke: ["ctspawn","tspawn","long","short","mid","topmid","under","ramp","pit","window","connector","apps","asite","bsite","ct","amain","door","garage","secret","lobby"]
-		};
-
-		const mapSelect = document.getElementById("map");
-		const positionSelect = document.getElementById("position");
-		const targetSelect = document.getElementById("target");
-		const lineup = document.getElementById("lineup");
-		const selects = document.querySelectorAll("select");
-
-		function capitalize(s) {
-			return s.charAt(0).toUpperCase() + s.slice(1);
-		}
-
-		function updateCallouts() {
-			const map = mapSelect.value;
-			const callouts = calloutsByMap[map];
-
-			positionSelect.innerHTML = "";
-			targetSelect.innerHTML = "";
-
-			callouts.forEach(c => {
-				const opt1 = document.createElement("option");
-				opt1.value = c;
-				opt1.text = capitalize(c);
-				positionSelect.appendChild(opt1);
-
-				const opt2 = document.createElement("option");
-				opt2.value = c;
-				opt2.text = capitalize(c);
-				targetSelect.appendChild(opt2);
-			});
-
-			updateImage();
-		}
-
-		function updateImage() {
-			const map = mapSelect.value;
-			const side = document.getElementById("side").value;
-			const position = positionSelect.value;
-			const target = targetSelect.value;
-			const util = document.getElementById("util").value;
-			const variant = document.getElementById("variant").value;
-
-			const path = `images/${map}/${side}-${position}-${target}-${util}-${variant}.png`;
-
-			console.log("Looking for:", path);
-
-			lineup.src = path;
-			lineup.onerror = () => {
-				console.error("Missing:", path);
-				lineup.alt = "Sorry, lineup not found.";
-				lineup.src = ""; 
-			};
-		}
-
-		updateCallouts();
-
-		mapSelect.addEventListener("change", updateCallouts);
-		selects.forEach(s => s.addEventListener("change", updateImage));
-	  </script>
-	</body>
+    function closePopup() {
+      document.getElementById("popup").style.display = "none";
+    }
+  </script>
+</body>
 </html>
