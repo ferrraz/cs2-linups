@@ -1,67 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>CS2 Lineups</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #1e1e1e; color: #fff; text-align: center; }
-    select { padding: 8px; margin: 5px; }
-    img { max-width: 80%; margin-top: 20px; border-radius: 12px; box-shadow: 0 0 10px #000; }
-  </style>
+	<meta charset="UTF-8">
+	<title>CS2 Lineups</title>
+	<style>
+		body { font-family: Arial, sans-serif; background: #1e1e1e; color: #fff; text-align: center; }
+		select { padding: 8px; margin: 5px; }
+		img { max-width: 80%; margin-top: 20px; border-radius: 12px; box-shadow: 0 0 10px #000; }
+	</style>
 </head>
 <body>
-  <h1>CS2 Lineup Guide</h1>
+	<h1>CS2 Lineup Guide</h1>
+	<div>
+	<label>Map:</label>
+		<select id="map">
+			<option value="mirage">Mirage</option>
+			<option value="inferno">Inferno</option>
+			<option value="dust2">Dust 2</option>
+			<option value="overpass">Overpass</option>
+			<option value="ancient">Ancient</option>
+			<option value="nuke">Nuke</option>
+		</select>
 
-  <div>
-    <label>Map:</label>
-    <select id="map">
-      <option value="mirage">Mirage</option>
-      <option value="inferno">Inferno</option>
-	  <option value="dust2">Dust 2</option>
-	  <option value="overpass">Overpass</option>
-	  <option value="ancient">Ancient</option>
-    </select>
+		<label>Side:</label>
+		<select id="side">
+			<option value="t">T-Side</option>
+			<option value="ct">CT-Side</option>
+		</select>
 
-    <label>Side:</label>
-    <select id="side">
-      <option value="t">T-Side</option>
-      <option value="ct">CT-Side</option>
-    </select>
+		<label>Position:</label>
+		<select id="position"></select>
 
-    <label>Utility:</label>
-    <select id="util">
-      <option value="smoke">Smoke</option>
-      <option value="molly">Molotov</option>
-      <option value="flash">Flash</option>
-	  <option value="nade">Nade</option>
-    </select>
-  </div>
+		<label>Target:</label>
+		<select id="target"></select>
 
-  <label>Variant:</label>
-<select id="variant">
-  <option value="a">A Site</option>
-  <option value="b">B Site</option>
-  <option value="long">Long</option>
-  <option value="short">Short</option>
-  <option value="sandbags">Sandbags</option>
-</select>
+		<label>Utility:</label>
+		<select id="util">
+			<option value="smoke">Smoke</option>
+			<option value="molly">Molotov</option>
+			<option value="flash">Flash</option>
+			<option value="nade">Nade</option>
+		</select>
 
-<script>
-  const lineup = document.getElementById("lineup");
-  const selects = document.querySelectorAll("select");
+		<label>Variant:</label>
+		<select id="variant">
+			<option value="m1">M1 Throw</option>
+			<option value="m2">M2 Throw</option>
+			<option value="m1m2">M1+M2 Throw</option>
+			<option value="jump">JumpThrow</option>
+			<option value="m1m2">M1+M2 JumpThrow</option>
+			<option value="m1m2jump">W+JumpThrow</option>
+			<option value="insta">Insta Smoke</option>
+			<option value="crouch">Crouch JumpThrow</option>
+			<option value="m1crouch">M1 Crouch JumpThrow</option>
+			<option value="m2crouch">M2 Crouch JumpThrow</option>
+			<option value="m1m2crouch">M1+M2 Crouch JumpThrow</option>
+		</select>
+	  </div>
 
-  function updateImage() {
-    const map = document.getElementById("map").value;
-    const side = document.getElementById("side").value;
-    const position = document.getElementById("position").value;
-    const variant = document.getElementById("variant").value;
-    const util = document.getElementById("util").value;
+	  <img id="lineup" src="" alt="Lineup">
 
-    lineup.src = `images/${map}/${side}-${position}-${variant}-${util}.jpg`;
-  }
+	  <script>
+		const calloutsByMap = {
+			ancient: ["ctspawn","tspawn","long","short","mid","topmid","under","ramp","pit","window","connector","apps","asite","bsite","ct","donut","red","cave","temple","amain"],
+			dust2: ["ctspawn","tspawn","long","short","mid","topmid","under","ramp","pit","window","connector","apps","asite","bsite","ct","longdoors","bdoors","xbox"],
+			mirage: ["ctspawn","tspawn","long","short","mid","topmid","under","ramp","pit","window","connector","apps","asite","bsite","ct","tetris","palace","underpalace","kitchen","kitchendoor","ticket"],
+			inferno: ["ctspawn","tspawn","long","short","mid","topmid","under","ramp","pit","window","connector","apps","asite","bsite","ct","banana","1st2nd","coffins","quad"],
+			overpass: ["ctspawn","tspawn","long","short","mid","topmid","under","ramp","pit","window","connector","apps","asite","bsite","ct","sandbags","toilets","bank","bins","walkway","alley","water"],
+			nuke: ["ctspawn","tspawn","long","short","mid","topmid","under","ramp","pit","window","connector","apps","asite","bsite","ct","amain","door","garage","secret","lobby"]
+		};
 
-  selects.forEach(s => s.addEventListener("change", updateImage));
-</script>
+		const mapSelect = document.getElementById("map");
+		const positionSelect = document.getElementById("position");
+		const targetSelect = document.getElementById("target");
+		const lineup = document.getElementById("lineup");
+		const selects = document.querySelectorAll("select");
 
-</body>
+		function capitalize(s) {
+			return s.charAt(0).toUpperCase() + s.slice(1);
+		}
+
+		function updateCallouts() {
+			const map = mapSelect.value;
+			const callouts = calloutsByMap[map];
+
+			positionSelect.innerHTML = "";
+			targetSelect.innerHTML = "";
+
+			callouts.forEach(c => {
+				const opt1 = document.createElement("option");
+				opt1.value = c;
+				opt1.text = capitalize(c);
+				positionSelect.appendChild(opt1);
+
+				const opt2 = document.createElement("option");
+				opt2.value = c;
+				opt2.text = capitalize(c);
+				targetSelect.appendChild(opt2);
+			});
+
+			updateImage();
+		}
+
+		function updateImage() {
+			const map = mapSelect.value;
+			const side = document.getElementById("side").value;
+			const position = positionSelect.value;
+			const target = targetSelect.value;
+			const util = document.getElementById("util").value;
+			const variant = document.getElementById("variant").value;
+
+			lineup.src = `images/${map}/${side}-${position}-${target}-${util}-${variant}.jpg`;
+		}
+
+		updateCallouts();
+
+		mapSelect.addEventListener("change", updateCallouts);
+		selects.forEach(s => s.addEventListener("change", updateImage));
+	  </script>
+	</body>
 </html>
