@@ -110,7 +110,16 @@
 			const util = document.getElementById("util").value;
 			const variant = document.getElementById("variant").value;
 
-			lineup.src = `images/${map}/${side}-${position}-${target}-${util}-${variant}.png`;
+			const path = `images/${map}/${side}-${position}-${target}-${util}-${variant}.png`;
+
+			console.log("Looking for:", path);
+
+			lineup.src = path;
+			lineup.onerror = () => {
+				console.error("Missing:", path);
+				lineup.alt = "Sorry, lineup not found.";
+				lineup.src = ""; 
+			};
 		}
 
 		updateCallouts();
