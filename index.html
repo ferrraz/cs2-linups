@@ -8,16 +8,31 @@
       font-family: Arial, sans-serif;
       background: #1e1e1e;
       color: #fff;
+      margin: 0;
       text-align: center;
     }
+
+    h1 {
+      margin: 20px 0;
+    }
+
+    .map-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+
     .map-container {
       position: relative;
       display: inline-block;
     }
+
     .map-container img {
       max-width: 90%;
       border-radius: 12px;
+      display: block;
     }
+
     .icon {
       position: absolute;
       width: 20px;
@@ -28,6 +43,7 @@
       transform: translate(-50%, -50%);
       border: 2px solid white;
     }
+
     .popup {
       position: fixed;
       top: 50%;
@@ -38,13 +54,37 @@
       border-radius: 12px;
       box-shadow: 0 0 20px black;
       display: none;
-      max-width: 500px;
+      max-width: 1500px;
+      overflow-x: auto;
     }
-    .popup img {
-      max-width: 100%;
+
+    .popup-content {
+      display: flex;
+      gap: 15px;
+      flex-wrap: nowrap;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .popup-content img {
+      height: 400px;
+	  width: 600px;
+      cursor: zoom-in;
       border-radius: 8px;
-      margin: 10px 0;
+      transition: transform 0.3s ease;
     }
+
+    .popup-content img.zoomed {
+      position: fixed !important;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(5.0);
+      z-index: 9999;
+      max-height: 800px;
+      max-width: 1200px;
+      cursor: zoom-out;
+    }
+
     .close-btn {
       background: #444;
       padding: 5px 10px;
@@ -52,60 +92,92 @@
       cursor: pointer;
       margin-top: 10px;
     }
+
+    .popup h2 {
+      margin-bottom: 15px;
+    }
   </style>
 </head>
 <body>
   <h1>CS2 Lineup Guide – Mirage</h1>
-  
-  <div class="map-container">
 
-    <img src="images/mirage/mirageradar.png" alt="Mirage Radar">
-    
-    <div class="icon" style="top: 32%; left: 84%;" onclick="showPopup('window1')"></div>
-	<div class="icon" style="top: 34%; left: 83%;" onclick="showPopup('window2')"></div>
-	<div class="icon" style="top: 36%; left: 83%;" onclick="showPopup('window3')"></div>
-	<div class="icon" style="top: 38%; left: 83%;" onclick="showPopup('window4')"></div>
-	<div class="icon" style="top: 40%; left: 85%;" onclick="showPopup('window5')"></div>
-    <div class="icon" style="top: 53%; left: 81%;" onclick="showPopup('ticket1')"></div>
-	<div class="icon" style="top: 61%; left: 62%;" onclick="showPopup('ticket2')"></div>
-    <div class="icon" style="top: 30%; left: 70%;" onclick="showPopup('jungle')"></div>
+  <div class="map-wrapper">
+    <div class="map-container">
+      <img src="images/mirage/mirageradar.png" alt="Mirage Radar">
+
+      <div class="icon" style="top: 32%; left: 79%;" onclick="showPopup('window1')"></div>
+      <div class="icon" style="top: 34%; left: 78%;" onclick="showPopup('window2')"></div>
+      <div class="icon" style="top: 36%; left: 78%;" onclick="showPopup('window3')"></div>
+      <div class="icon" style="top: 38%; left: 78%;" onclick="showPopup('window4')"></div>
+      <div class="icon" style="top: 40%; left: 80%;" onclick="showPopup('window5')"></div>
+      <div class="icon" style="top: 53%; left: 76%;" onclick="showPopup('Ticket1')"></div>
+      <div class="icon" style="top: 61%; left: 57%;" onclick="showPopup('Ticket2')"></div>
+      <div class="icon" style="top: 16%; left: 54%;" onclick="showPopup('BSite')"></div>
+      <div class="icon" style="top: 53%; left: 73%;" onclick="showPopup('Connector1')"></div>
+      <div class="icon" style="top: 32%; left: 82%;" onclick="showPopup('Connector2')"></div>
+      <div class="icon" style="top: 31%; left: 82%;" onclick="showPopup('TopMid')"></div>
+	  <div class="icon" style="top: 47%; left: 63%;" onclick="showPopup('Short')"></div>
+    </div>
   </div>
 
-  <!-- Popup modal -->
   <div id="popup" class="popup">
-    <h2 id="popup-title"></h2>
-    <div id="popup-content"></div>
+    <div id="popup-content" class="popup-content"></div>
     <div class="close-btn" onclick="closePopup()">Close</div>
   </div>
 
   <script>
     const lineups = {
       window1: [{ img: "images/mirage/4.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)" }],
-	  window2: [{ img: "images/mirage/1.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)" }],
-	  window3: [{ img: "images/mirage/5.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)" }],
-	  window4: [{ img: "images/mirage/2.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)" }],
-	  window5: [{ img: "images/mirage/3.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)" }],
-      ticket1: [{ img: "images/mirage/15.png", desc: "From Ramp → CT Smoke (JumpThrow)" }],
-	  ticket2: [{ img: "images/mirage/17.png", desc: "From Ramp → CT Smoke (M1+M2 JumpThrow)" }],
-      jungle: [{ img: "images/mirage/ramp-jungle-smoke.png", desc: "From Ramp → Jungle Smoke" }]
+      window2: [{ img: "images/mirage/1.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)" }],
+      window3: [{ img: "images/mirage/5.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)" }],
+      window4: [{ img: "images/mirage/2.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)" }],
+      window5: [{ img: "images/mirage/3.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)" }],
+      BSite: [
+        { img: "images/mirage/7.png", desc: "From Apps → Kitchen Door Smoke (JumpThrow)" },
+        { img: "images/mirage/8.png", desc: "From Apps → Kitchen Smoke (JumpThrow)" },
+        { img: "images/mirage/9.png", desc: "From Apps → Short Smoke (M1 Throw)" }
+      ],
+      Ticket1: [{ img: "images/mirage/15.png", desc: "From Ramp → CT Smoke (JumpThrow)" }],
+      Ticket2: [{ img: "images/mirage/17.png", desc: "From Ramp → CT Smoke (M1+M2 JumpThrow)" }],
+      Connector1: [
+        { img: "images/mirage/12.png", desc: "From Ramp → Connector Smoke (JumpThrow)" },
+        { img: "images/mirage/14.png", desc: "From Ramp → Stairs Smoke (JumpThrow)" }
+      ],
+      Connector2: [{ img: "images/mirage/23.png", desc: "T-Spawn → Connector Smoke (JumpThrow)" }],
+      Short: [{ img: "images/mirage/21.png", desc: "Top Mid → Short Smoke (M1 Throw)" }],
+      TopMid: [{ img: "images/mirage/24.png", desc: "T-Spawn → Top Mid Smoke (M1 Throw)" }],
+      window6: [{ img: "images/mirage/6.png", desc: "From Window → Break Smoke (Nade)" }]
     };
 
     function showPopup(position) {
       const popup = document.getElementById("popup");
-      const title = document.getElementById("popup-title");
       const content = document.getElementById("popup-content");
 
-      title.innerText = position.toUpperCase();
       content.innerHTML = "";
 
       if (lineups[position]) {
         lineups[position].forEach(l => {
+          const wrapper = document.createElement("div");
+          wrapper.style.textAlign = "center";
+
           const img = document.createElement("img");
           img.src = l.img;
-          const p = document.createElement("p");
-          p.innerText = l.desc;
-          content.appendChild(img);
-          content.appendChild(p);
+          img.alt = l.desc;
+
+          const desc = document.createElement("p");
+          desc.innerText = l.desc;
+          desc.style.color = "#fff";
+          desc.style.marginTop = "5px";
+          desc.style.fontSize = "14px";
+
+          // Zoom on click (fixed)
+          img.addEventListener("click", () => {
+            img.classList.toggle("zoomed");
+          });
+
+          wrapper.appendChild(img);
+          wrapper.appendChild(desc);
+          content.appendChild(wrapper);
         });
       } else {
         content.innerHTML = "<p>No lineups yet.</p>";
@@ -115,7 +187,13 @@
     }
 
     function closePopup() {
-      document.getElementById("popup").style.display = "none";
+      const popup = document.getElementById("popup");
+      popup.style.display = "none";
+
+      // Remove zoomed class if any image is zoomed
+      document.querySelectorAll(".popup-content img.zoomed").forEach(img => {
+        img.classList.remove("zoomed");
+      });
     }
   </script>
 </body>
