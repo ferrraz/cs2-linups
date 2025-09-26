@@ -68,7 +68,7 @@
 
     .popup-content img {
       height: 400px;
-	  width: 600px;
+      width: 600px;
       cursor: zoom-in;
       border-radius: 8px;
       transition: transform 0.3s ease;
@@ -96,27 +96,59 @@
     .popup h2 {
       margin-bottom: 15px;
     }
+
+    .filter-buttons {
+      margin-bottom: 20px;
+    }
+    .filter-buttons button {
+      background: #333;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      margin: 0 5px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .filter-buttons button:hover {
+      background: #555;
+    }
   </style>
 </head>
 <body>
   <h1>CS2 Lineup Guide – Mirage</h1>
+  
+  <div class="filter-buttons">
+    <button onclick="setFilter('smoke')">Smokes</button>
+    <button onclick="setFilter('flash')">Flashes</button>
+    <button onclick="setFilter('molly')">Mollys</button>
+    <button onclick="setFilter('nade')">Nades</button>
+  </div>
 
   <div class="map-wrapper">
     <div class="map-container">
       <img src="images/mirage/mirageradar.png" alt="Mirage Radar">
 
-      <div class="icon" style="top: 32%; left: 79%;" onclick="showPopup('window1')"></div>
-      <div class="icon" style="top: 34%; left: 78%;" onclick="showPopup('window2')"></div>
-      <div class="icon" style="top: 36%; left: 78%;" onclick="showPopup('window3')"></div>
-      <div class="icon" style="top: 38%; left: 78%;" onclick="showPopup('window4')"></div>
-      <div class="icon" style="top: 40%; left: 80%;" onclick="showPopup('window5')"></div>
-      <div class="icon" style="top: 53%; left: 76%;" onclick="showPopup('Ticket1')"></div>
-      <div class="icon" style="top: 61%; left: 57%;" onclick="showPopup('Ticket2')"></div>
-      <div class="icon" style="top: 16%; left: 54%;" onclick="showPopup('BSite')"></div>
-      <div class="icon" style="top: 53%; left: 73%;" onclick="showPopup('Connector1')"></div>
-      <div class="icon" style="top: 32%; left: 82%;" onclick="showPopup('Connector2')"></div>
-      <div class="icon" style="top: 31%; left: 82%;" onclick="showPopup('TopMid')"></div>
-	  <div class="icon" style="top: 47%; left: 63%;" onclick="showPopup('Short')"></div>
+      <!-- Add data-position to every icon -->
+      <div class="icon" data-position="window1" style="top: 32%; left: 79%;" onclick="showPopup('window1')"></div>
+      <div class="icon" data-position="window2" style="top: 34%; left: 78%;" onclick="showPopup('window2')"></div>
+      <div class="icon" data-position="window3" style="top: 36%; left: 78%;" onclick="showPopup('window3')"></div>
+      <div class="icon" data-position="window4" style="top: 38%; left: 78%;" onclick="showPopup('window4')"></div>
+      <div class="icon" data-position="window5" style="top: 40%; left: 80%;" onclick="showPopup('window5')"></div>
+      <div class="icon" data-position="Ticket1" style="top: 53%; left: 76%;" onclick="showPopup('Ticket1')"></div>
+      <div class="icon" data-position="Ticket2" style="top: 61%; left: 57%;" onclick="showPopup('Ticket2')"></div>
+      <div class="icon" data-position="BSite" style="top: 16%; left: 54%;" onclick="showPopup('BSite')"></div>
+      <div class="icon" data-position="Connector1" style="top: 53%; left: 73%;" onclick="showPopup('Connector1')"></div>
+      <div class="icon" data-position="Connector2" style="top: 32%; left: 82%;" onclick="showPopup('Connector2')"></div>
+      <div class="icon" data-position="TopMid" style="top: 31%; left: 82%;" onclick="showPopup('TopMid')"></div>
+      <div class="icon" data-position="Short" style="top: 47%; left: 63%;" onclick="showPopup('Short')"></div>
+      <div class="icon" data-position="window6" style="top: 51%; left: 34%;" onclick="showPopup('window6')"></div>
+      <div class="icon" data-position="short2" style="top: 48%; left: 41%;" onclick="showPopup('short2')"></div>
+      <div class="icon" data-position="window7" style="top: 49%; left: 43%;" onclick="showPopup('window7')"></div>
+      <div class="icon" data-position="ramp1" style="top: 53%; left: 72%;" onclick="showPopup('ramp1')"></div>
+      <div class="icon" data-position="tetris1" style="top: 61%; left: 57%;" onclick="showPopup('tetris1')"></div>
+      <div class="icon" data-position="tetris2" style="top: 61%; left: 59%;" onclick="showPopup('tetris2')"></div>
+      <div class="icon" data-position="topmid1" style="top: 38%; left: 60%;" onclick="showPopup('topmid1')"></div>
+      <div class="icon" data-position="topmid2" style="top: 39%; left: 62%;" onclick="showPopup('topmid2')"></div>
     </div>
   </div>
 
@@ -127,27 +159,51 @@
 
   <script>
     const lineups = {
-      window1: [{ img: "images/mirage/4.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)" }],
-      window2: [{ img: "images/mirage/1.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)" }],
-      window3: [{ img: "images/mirage/5.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)" }],
-      window4: [{ img: "images/mirage/2.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)" }],
-      window5: [{ img: "images/mirage/3.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)" }],
+      window1: [{ img: "images/mirage/4.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)", type: "smoke" }],
+      window2: [{ img: "images/mirage/1.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)", type: "smoke" }],
+      window3: [{ img: "images/mirage/5.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)", type: "smoke" }],
+      window4: [{ img: "images/mirage/2.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)", type: "smoke" }],
+      window5: [{ img: "images/mirage/3.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)", type: "smoke" }],
       BSite: [
-        { img: "images/mirage/7.png", desc: "From Apps → Kitchen Door Smoke (JumpThrow)" },
-        { img: "images/mirage/8.png", desc: "From Apps → Kitchen Smoke (JumpThrow)" },
-        { img: "images/mirage/9.png", desc: "From Apps → Short Smoke (M1 Throw)" }
+        { img: "images/mirage/7.png", desc: "From Apps → Kitchen Door Smoke (JumpThrow)", type: "smoke" },
+        { img: "images/mirage/8.png", desc: "From Apps → Kitchen Smoke (JumpThrow)", type: "smoke" },
+        { img: "images/mirage/9.png", desc: "From Apps → Short Smoke (M1 Throw)", type: "smoke" }
       ],
-      Ticket1: [{ img: "images/mirage/15.png", desc: "From Ramp → CT Smoke (JumpThrow)" }],
-      Ticket2: [{ img: "images/mirage/17.png", desc: "From Ramp → CT Smoke (M1+M2 JumpThrow)" }],
+      Ticket1: [{ img: "images/mirage/15.png", desc: "From Ramp → CT Smoke (JumpThrow)", type: "smoke" }],
+      Ticket2: [{ img: "images/mirage/17.png", desc: "From Tetris → CT Smoke (M1+M2 JumpThrow)", type: "smoke" }],
       Connector1: [
-        { img: "images/mirage/12.png", desc: "From Ramp → Connector Smoke (JumpThrow)" },
-        { img: "images/mirage/14.png", desc: "From Ramp → Stairs Smoke (JumpThrow)" }
+        { img: "images/mirage/12.png", desc: "From Ramp → Connector Smoke (JumpThrow)", type: "smoke" },
+        { img: "images/mirage/14.png", desc: "From Ramp → Stairs Smoke (JumpThrow)", type: "smoke" }
       ],
-      Connector2: [{ img: "images/mirage/23.png", desc: "T-Spawn → Connector Smoke (JumpThrow)" }],
-      Short: [{ img: "images/mirage/21.png", desc: "Top Mid → Short Smoke (M1 Throw)" }],
-      TopMid: [{ img: "images/mirage/24.png", desc: "T-Spawn → Top Mid Smoke (M1 Throw)" }],
-      window6: [{ img: "images/mirage/6.png", desc: "From Window → Break Smoke (Nade)" }]
+      Connector2: [{ img: "images/mirage/23.png", desc: "T-Spawn → Connector Smoke (JumpThrow)", type: "smoke" }],
+      Short: [{ img: "images/mirage/21.png", desc: "Top Mid → Short Smoke (M1 Throw)", type: "smoke" }],
+      TopMid: [{ img: "images/mirage/24.png", desc: "T-Spawn → Top Mid Smoke (M1 Throw)", type: "smoke" }],
+      window6: [{ img: "images/mirage/6.png", desc: "From Window → Break Smoke With Nade (M2+Crouched JumpThrow)", type: "nade" }],
+      short2: [{ img: "images/mirage/10.png", desc: "From Under Window → Flash Short (M1 Throw)", type: "flash" }],
+      window7: [{ img: "images/mirage/11.png", desc: "From Under Window → Flash Window (M2+Crouched JumpThrow)", type: "flash" }],
+      ramp1: [{ img: "images/mirage/13.png", desc: "From Ramp → Flash Tetris (M1 Throw)", type: "flash" }],
+      tetris1: [
+        { img: "images/mirage/16.png", desc: "From Tetris → Molly Ticket (M1 JumpThrow)", type: "molly" },
+        { img: "images/mirage/22.png", desc: "From Tetris → Molly A Site (M1 Throw)", type: "molly" }
+      ],
+      tetris2: [{ img: "images/mirage/18.png", desc: "From Tetris → Molly Under Palace (Shift Walk + M1 Throw)", type: "molly" }],
+      topmid1: [{ img: "images/mirage/19.png", desc: "From Top Mid → Flash Connector (M1 Throw)", type: "flash" }],
+      topmid2: [{ img: "images/mirage/20.png", desc: "From Top Mid → Molly Connector (M1 Throw)", type: "molly" }],
     };
+
+    let currentFilter = "smoke"; // default filter
+
+    function setFilter(type) {
+      currentFilter = type;
+      closePopup();
+
+      // Show only icons matching the filter
+      document.querySelectorAll(".icon").forEach(icon => {
+        const pos = icon.getAttribute("data-position");
+        const hasLineup = lineups[pos] && lineups[pos].some(l => l.type === currentFilter);
+        icon.style.display = hasLineup ? "block" : "none";
+      });
+    }
 
     function showPopup(position) {
       const popup = document.getElementById("popup");
@@ -156,29 +212,34 @@
       content.innerHTML = "";
 
       if (lineups[position]) {
-        lineups[position].forEach(l => {
-          const wrapper = document.createElement("div");
-          wrapper.style.textAlign = "center";
+        lineups[position]
+          .filter(l => l.type === currentFilter)
+          .forEach(l => {
+            const wrapper = document.createElement("div");
+            wrapper.style.textAlign = "center";
 
-          const img = document.createElement("img");
-          img.src = l.img;
-          img.alt = l.desc;
+            const img = document.createElement("img");
+            img.src = l.img;
+            img.alt = l.desc;
 
-          const desc = document.createElement("p");
-          desc.innerText = l.desc;
-          desc.style.color = "#fff";
-          desc.style.marginTop = "5px";
-          desc.style.fontSize = "14px";
+            const desc = document.createElement("p");
+            desc.innerText = l.desc;
+            desc.style.color = "#fff";
+            desc.style.marginTop = "5px";
+            desc.style.fontSize = "14px";
 
-          // Zoom on click (fixed)
-          img.addEventListener("click", () => {
-            img.classList.toggle("zoomed");
+            img.addEventListener("click", () => {
+              img.classList.toggle("zoomed");
+            });
+
+            wrapper.appendChild(img);
+            wrapper.appendChild(desc);
+            content.appendChild(wrapper);
           });
 
-          wrapper.appendChild(img);
-          wrapper.appendChild(desc);
-          content.appendChild(wrapper);
-        });
+        if (!content.hasChildNodes()) {
+          content.innerHTML = "<p>No lineups for this utility type.</p>";
+        }
       } else {
         content.innerHTML = "<p>No lineups yet.</p>";
       }
@@ -190,11 +251,13 @@
       const popup = document.getElementById("popup");
       popup.style.display = "none";
 
-      // Remove zoomed class if any image is zoomed
       document.querySelectorAll(".popup-content img.zoomed").forEach(img => {
         img.classList.remove("zoomed");
       });
     }
+
+    // Run filter once at start
+    setFilter(currentFilter);
   </script>
 </body>
 </html>
