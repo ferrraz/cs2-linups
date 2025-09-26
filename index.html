@@ -93,14 +93,10 @@
       margin-top: 10px;
     }
 
-    .popup h2 {
-      margin-bottom: 15px;
-    }
-
-    .filter-buttons {
+    .filter-buttons, .map-buttons {
       margin-bottom: 20px;
     }
-    .filter-buttons button {
+    button {
       background: #333;
       color: #fff;
       border: none;
@@ -109,14 +105,23 @@
       border-radius: 6px;
       cursor: pointer;
     }
-    .filter-buttons button:hover {
+    button:hover {
       background: #555;
     }
   </style>
 </head>
 <body>
-  <h1>CS2 Lineup Guide – Mirage</h1>
-  
+  <h1>CS2 Lineup Guide</h1>
+
+  <div class="map-buttons">
+    <button onclick="setMap('mirage')">Mirage</button>
+    <button onclick="setMap('inferno')">Inferno</button>
+    <button onclick="setMap('dust2')">Dust 2</button>
+	<button onclick="setMap('ancient')">Ancient</button>
+	<button onclick="setMap('overpass')">Overpass</button>
+	<button onclick="setMap('nuke')">Nuke</button>
+  </div>
+
   <div class="filter-buttons">
     <button onclick="setFilter('smoke')">Smokes</button>
     <button onclick="setFilter('flash')">Flashes</button>
@@ -125,30 +130,7 @@
   </div>
 
   <div class="map-wrapper">
-    <div class="map-container">
-      <img src="images/mirage/mirageradar.png" alt="Mirage Radar">
-
-      <!-- Add data-position to every icon -->
-      <div class="icon" data-position="window1" style="top: 32%; left: 79%;" onclick="showPopup('window1')"></div>
-      <div class="icon" data-position="window2" style="top: 34%; left: 78%;" onclick="showPopup('window2')"></div>
-      <div class="icon" data-position="window3" style="top: 36%; left: 78%;" onclick="showPopup('window3')"></div>
-      <div class="icon" data-position="window4" style="top: 38%; left: 78%;" onclick="showPopup('window4')"></div>
-      <div class="icon" data-position="window5" style="top: 40%; left: 80%;" onclick="showPopup('window5')"></div>
-      <div class="icon" data-position="Ticket1" style="top: 53%; left: 76%;" onclick="showPopup('Ticket1')"></div>
-      <div class="icon" data-position="Ticket2" style="top: 61%; left: 57%;" onclick="showPopup('Ticket2')"></div>
-      <div class="icon" data-position="BSite" style="top: 16%; left: 54%;" onclick="showPopup('BSite')"></div>
-      <div class="icon" data-position="Connector1" style="top: 53%; left: 73%;" onclick="showPopup('Connector1')"></div>
-      <div class="icon" data-position="Connector2" style="top: 32%; left: 82%;" onclick="showPopup('Connector2')"></div>
-      <div class="icon" data-position="TopMid" style="top: 31%; left: 82%;" onclick="showPopup('TopMid')"></div>
-      <div class="icon" data-position="Short" style="top: 47%; left: 63%;" onclick="showPopup('Short')"></div>
-      <div class="icon" data-position="window6" style="top: 51%; left: 34%;" onclick="showPopup('window6')"></div>
-      <div class="icon" data-position="short2" style="top: 48%; left: 41%;" onclick="showPopup('short2')"></div>
-      <div class="icon" data-position="window7" style="top: 49%; left: 43%;" onclick="showPopup('window7')"></div>
-      <div class="icon" data-position="ramp1" style="top: 53%; left: 72%;" onclick="showPopup('ramp1')"></div>
-      <div class="icon" data-position="tetris1" style="top: 61%; left: 57%;" onclick="showPopup('tetris1')"></div>
-      <div class="icon" data-position="tetris2" style="top: 61%; left: 59%;" onclick="showPopup('tetris2')"></div>
-      <div class="icon" data-position="topmid1" style="top: 38%; left: 60%;" onclick="showPopup('topmid1')"></div>
-      <div class="icon" data-position="topmid2" style="top: 39%; left: 62%;" onclick="showPopup('topmid2')"></div>
+    <div class="map-container" id="map-container">
     </div>
   </div>
 
@@ -158,61 +140,209 @@
   </div>
 
   <script>
-    const lineups = {
-      window1: [{ img: "images/mirage/4.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)", type: "smoke" }],
-      window2: [{ img: "images/mirage/1.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)", type: "smoke" }],
-      window3: [{ img: "images/mirage/5.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)", type: "smoke" }],
-      window4: [{ img: "images/mirage/2.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)", type: "smoke" }],
-      window5: [{ img: "images/mirage/3.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)", type: "smoke" }],
-      BSite: [
-        { img: "images/mirage/7.png", desc: "From Apps → Kitchen Door Smoke (JumpThrow)", type: "smoke" },
-        { img: "images/mirage/8.png", desc: "From Apps → Kitchen Smoke (JumpThrow)", type: "smoke" },
-        { img: "images/mirage/9.png", desc: "From Apps → Short Smoke (M1 Throw)", type: "smoke" }
-      ],
-      Ticket1: [{ img: "images/mirage/15.png", desc: "From Ramp → CT Smoke (JumpThrow)", type: "smoke" }],
-      Ticket2: [{ img: "images/mirage/17.png", desc: "From Tetris → CT Smoke (M1+M2 JumpThrow)", type: "smoke" }],
-      Connector1: [
-        { img: "images/mirage/12.png", desc: "From Ramp → Connector Smoke (JumpThrow)", type: "smoke" },
-        { img: "images/mirage/14.png", desc: "From Ramp → Stairs Smoke (JumpThrow)", type: "smoke" }
-      ],
-      Connector2: [{ img: "images/mirage/23.png", desc: "T-Spawn → Connector Smoke (JumpThrow)", type: "smoke" }],
-      Short: [{ img: "images/mirage/21.png", desc: "Top Mid → Short Smoke (M1 Throw)", type: "smoke" }],
-      TopMid: [{ img: "images/mirage/24.png", desc: "T-Spawn → Top Mid Smoke (M1 Throw)", type: "smoke" }],
-      window6: [{ img: "images/mirage/6.png", desc: "From Window → Break Smoke With Nade (M2+Crouched JumpThrow)", type: "nade" }],
-      short2: [{ img: "images/mirage/10.png", desc: "From Under Window → Flash Short (M1 Throw)", type: "flash" }],
-      window7: [{ img: "images/mirage/11.png", desc: "From Under Window → Flash Window (M2+Crouched JumpThrow)", type: "flash" }],
-      ramp1: [{ img: "images/mirage/13.png", desc: "From Ramp → Flash Tetris (M1 Throw)", type: "flash" }],
-      tetris1: [
-        { img: "images/mirage/16.png", desc: "From Tetris → Molly Ticket (M1 JumpThrow)", type: "molly" },
-        { img: "images/mirage/22.png", desc: "From Tetris → Molly A Site (M1 Throw)", type: "molly" }
-      ],
-      tetris2: [{ img: "images/mirage/18.png", desc: "From Tetris → Molly Under Palace (Shift Walk + M1 Throw)", type: "molly" }],
-      topmid1: [{ img: "images/mirage/19.png", desc: "From Top Mid → Flash Connector (M1 Throw)", type: "flash" }],
-      topmid2: [{ img: "images/mirage/20.png", desc: "From Top Mid → Molly Connector (M1 Throw)", type: "molly" }],
+    const maps = {
+      mirage: {
+        radar: "images/mirage/mirageradar.png",
+        lineups: {
+          window1: [{ img: "images/mirage/4.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)", type: "smoke" }],
+		  window2: [{ img: "images/mirage/1.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)", type: "smoke" }],
+		  window3: [{ img: "images/mirage/5.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)", type: "smoke" }],
+		  window4: [{ img: "images/mirage/2.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)", type: "smoke" }],
+		  window5: [{ img: "images/mirage/3.png", desc: "From T-Spawn → Window Smoke (Insta Smoke)", type: "smoke" }],
+		  bsite1: [{ img: "images/mirage/7.png", desc: "From Apps → Kitchen Door Smoke (JumpThrow)", type: "smoke" }, { img: "images/mirage/8.png", desc: "From Apps → Kitchen Smoke (JumpThrow)", type: "smoke" }, { img: "images/mirage/9.png", desc: "From Apps → Short Smoke (M1 Throw)", type: "smoke" }],
+		  ticket1: [{ img: "images/mirage/15.png", desc: "From Ramp → CT Smoke (JumpThrow)", type: "smoke" }],
+		  ticket2: [{ img: "images/mirage/17.png", desc: "From Tetris → CT Smoke (M1+M2 JumpThrow)", type: "smoke" }],
+		  connector1: [{ img: "images/mirage/12.png", desc: "From Ramp → Connector Smoke (JumpThrow)", type: "smoke" }, { img: "images/mirage/14.png", desc: "From Ramp → Stairs Smoke (JumpThrow)", type: "smoke" }],
+		  connector2: [{ img: "images/mirage/23.png", desc: "T-Spawn → Connector Smoke (JumpThrow)", type: "smoke" }],
+		  short1: [{ img: "images/mirage/21.png", desc: "Top Mid → Short Smoke (M1 Throw)", type: "smoke" }],
+		  topmid1: [{ img: "images/mirage/24.png", desc: "T-Spawn → Top Mid Smoke (M1 Throw)", type: "smoke" }],
+		  window6: [{ img: "images/mirage/6.png", desc: "From Window → Break Smoke With Nade (M2+Crouched JumpThrow)", type: "nade" }],
+		  short2: [{ img: "images/mirage/10.png", desc: "From Under Window → Flash Short (M1 Throw)", type: "flash" }],
+		  window7: [{ img: "images/mirage/11.png", desc: "From Under Window → Flash Window (M2+Crouched JumpThrow)", type: "flash" }],
+		  ramp1: [{ img: "images/mirage/13.png", desc: "From Ramp → Flash Tetris (M1 Throw)", type: "flash" }],
+		  tetris1: [{ img: "images/mirage/16.png", desc: "From Tetris → Molly Ticket (M1 JumpThrow)", type: "molly" }, { img: "images/mirage/22.png", desc: "From Tetris → Molly A Site (M1 Throw)", type: "molly" }],
+		  tetris2: [{ img: "images/mirage/18.png", desc: "From Tetris → Molly Under Palace (Shift Walk+M1 Throw)", type: "molly" }],
+		  topmid2: [{ img: "images/mirage/19.png", desc: "From Top Mid → Flash Connector (M1 Throw)", type: "flash" }],
+		  topmid3: [{ img: "images/mirage/20.png", desc: "From Top Mid → Molly Connector (M1 Throw)", type: "molly" }],
+        },
+        icons: [ 
+		  { pos: "window1", top: "32%", left: "79%" },
+          { pos: "window2", top: "34%", left: "78%" },
+          { pos: "window3", top: "36%", left: "78%" },
+		  { pos: "window4", top: "38%", left: "78%" },
+		  { pos: "window5", top: "40%", left: "80%" },
+		  { pos: "bsite1", top: "16%", left: "54%"},  
+		  { pos: "ticket1", top: "53%", left: "76%" },
+		  { pos: "ticket2", top: "61%", left: "57%" },
+		  { pos: "connector1", top: "53%", left: "73%" }, 
+		  { pos: "connector2", top: "32%", left: "82%" }, 
+		  { pos: "short1", top: "47%", left: "63%" },
+		  { pos: "topmid1", top: "31%", left: "82%" }, 
+		  { pos: "window6", top: "51%", left: "34%" },
+		  { pos: "short2", top: "48%", left: "41%" },
+		  { pos: "window7", top: "49%", left: "43%" },
+		  { pos: "ramp1", top: "53%", left: "72%" },
+		  { pos: "tetris1", top: "61%", left: "57%" },
+		  { pos: "tetris2", top: "61%", left: "59%" },
+		  { pos: "topmid2", top: "39%", left: "62%" },
+		  { pos: "topmid3", top: "38%", left: "60%" }
+        ]
+      },
+      inferno: {
+        radar: "images/inferno/infernoradar.png",
+        lineups: {
+          banana1: [{ img: "images/inferno/1.png", desc: "From Motor → Smoke Banana (M1 JumpThrow)", type: "smoke" }],
+		  apps1: [{ img: "images/inferno/5.png", desc: "From Apps → Smoke Apps (M1 Throw)", type: "smoke" }],
+		  coffins1: [{ img: "images/inferno/9.png", desc: "From Banana → Smoke Coffins (M1 JumpThrow)", type: "smoke" }],
+		  ct1: [{ img: "images/inferno/11.png", desc: "From Banana → Smoke Ct (M1 JumpThrow)", type: "smoke" }],
+		  motor1: [{ img: "images/inferno/13.png", desc: "From Mid → Smoke Motor (M1+Crouch JumpThrow)", type: "smoke" }],
+		  long1: [{ img: "images/inferno/15.png", desc: "From Ramp → Smoke Long (M1+Crouch JumpThrow)", type: "smoke" }, { img: "images/inferno/16.png", desc: "From Ramp → Smoke Long B-Split (M1+Crouch JumpThrow)", type: "smoke" }],
+		  short1: [{ img: "images/inferno/17.png", desc: "From Ramp → Smoke Short (M1 JumpThrow)", type: "smoke" }],
+		  banana2: [{ img: "images/inferno/2.png", desc: "From Coffins → Flash Banana (M1 Throw)", type: "flash" }],
+		  pit1: [{ img: "images/inferno/4.png", desc: "From Apps → Flash Pit (M1+Crouch Throw)", type: "flash" }],
+		  bsite1: [{ img: "images/inferno/8.png", desc: "From Banana → Flash B-Site (M1 JumpThrow)", type: "flash" }, { img: "images/inferno/10.png", desc: "From Banana → Flash Ct (Shift Walk+M1 JumpThrow)", type: "flash" }],
+		  banana3: [{ img: "images/inferno/14.png", desc: "From Ramp → Flash Banana (M1 Throw)", type: "flash" }],
+		  asite1: [{ img: "images/inferno/3.png", desc: "From Long → Molly A-Site (M1 Throw)", type: "molly" }],
+		  pit2: [{ img: "images/inferno/6.png", desc: "From Apps → Molly Pit (M1 Throw)", type: "molly" }],
+		  firsec1: [{ img: "images/inferno/7.png", desc: "From Banana → Molly 1st and 2nd on B-Site (M1 Throw)", type: "molly" }, { img: "images/inferno/12.png", desc: "From Banana → Molly Quad on B-Site (M1 Throw)", type: "molly" }],
+        },
+        icons: [
+          { pos: "banana1", top: "45%", left: "60%" },
+          { pos: "apps1", top: "35%", left: "55%" },
+		  { pos: "coffins1", top: "35%", left: "55%" },
+		  { pos: "ct1", top: "35%", left: "55%" },
+		  { pos: "motor1", top: "35%", left: "55%" },
+		  { pos: "long1", top: "35%", left: "55%" },
+		  { pos: "short1", top: "35%", left: "55%" },
+		  { pos: "banana2", top: "35%", left: "55%" },
+		  { pos: "pit1", top: "35%", left: "55%" },
+		  { pos: "bsite1", top: "35%", left: "55%" },
+		  { pos: "banana3", top: "35%", left: "55%" },
+		  { pos: "asite1", top: "35%", left: "55%" },
+		  { pos: "pit2", top: "35%", left: "55%" },
+		  { pos: "firsec1", top: "35%", left: "55%" }
+		  
+        ]
+      },
+      dust2: {
+        radar: "images/dust2/dust2radar.png",
+        lineups: {
+          long1: [{ img: "images/dust2/1.png", desc: "From Elevator → Smoke Long Doors (M1 JumpThrow)", type: "smoke" }],
+		  ctspawn1: [{ img: "images/dust2/2.png", desc: "From Xbox → Smoke Ct-Spawn (M1+Crouch JumpThrow)", type: "smoke" }],
+		  window1: [{ img: "images/dust2/3.png", desc: "From Outside Tunnels → Smoke Window (M1 JumpThrow)", type: "smoke" }, { img: "images/dust2/4.png", desc: "From Outside Tunnels → Smoke B Doors (M1 JumpThrow)", type: "smoke" }],
+		  ctspawn2: [{ img: "images/dust2/5.png", desc: "From Stairs → Smoke Ct-Spawn (M1 Throw)", type: "smoke" }],
+		  stairs1: [{ img: "images/dust2/6.png", desc: "From Stairs → Smoke Stairs (M1 Throw)", type: "smoke" }],
+		  xbox1: [{ img: "images/dust2/8.png", desc: "From T-Spawn → Smoke Ct-Spawn (M1+Crouch JumpThrow)", type: "smoke" }],
+		  long2: [{ img: "images/dust2/7.png", desc: "From T-Spawn → Flash Long (M1 JumpThrow)", type: "flash" }]
+		  
+        },
+        icons: [
+          { pos: "long1", top: "40%", left: "70%" },
+		  { pos: "ctspawn1", top: "40%", left: "70%" },
+		  { pos: "window1", top: "40%", left: "70%" },
+		  { pos: "ctspawn2", top: "40%", left: "70%" },
+		  { pos: "stairs1", top: "40%", left: "70%" },
+		  { pos: "xbox1", top: "40%", left: "70%" },
+		  { pos: "long2", top: "40%", left: "70%" },
+        ]
+      },
+	  ancient: {
+        radar: "images/ancient/ancientradar.png",
+        lineups: {
+          cave1: [{ img: "images/ancient/1.png", desc: "From Cat → Smoke Cave (M1 Throw)", type: "smoke" }, { img: "images/ancient/2.png", desc: "From Cat → Smoke Long (M1 Throw)", type: "smoke" }, { img: "images/ancient/2.png", desc: "From Cat → Smoke Long (M1 Throw)", type: "smoke" }],
+		  ct1: [{ img: "images/ancient/4.png", desc: "From Stairs → Smoke Ct (M1 JumpThrow)", type: "smoke" }, { img: "images/ancient/5.png", desc: "From Stairs → Smoke Donut (M1+Crouch JumpThrow)", type: "smoke" }, { img: "images/ancient/5.png", desc: "From Stairs → Smoke Donut (M1+Crouch JumpThrow)", type: "smoke" }],
+		  red1: [{ img: "images/ancient/8.png", desc: "From T-Spawn → Smoke Red (M1 JumpThrow)", type: "smoke" }],
+		  mid1: [{ img: "images/ancient/7.png", desc: "From T-Spawn → Flash Mid (M1 JumpThrow)", type: "flash" }]
+        },
+        icons: [
+          { pos: "cave1", top: "40%", left: "70%" },
+		  { pos: "ct1", top: "40%", left: "70%" },
+		  { pos: "red1", top: "40%", left: "70%" },
+		  { pos: "mid1", top: "40%", left: "70%" }
+        ]
+      },
+	  overpass: {
+        radar: "images/overpass/overpassradar.png",
+        lineups: {
+          bsite1: [{ img: "images/overpass/1.png", desc: "From Alley → Smoke B-Site (M1 Throw)", type: "smoke" }],
+		  bank1: [{ img: "images/overpass/3.png", desc: "From Long → Smoke Bank (M1 JumpThrow)", type: "smoke" }, { img: "images/overpass/4.png", desc: "From Long → Smoke Bins (M1 JumpThrow)", type: "smoke" }],
+		  window1: [{ img: "images/overpass/5.png", desc: "From Sandbags → Smoke Window (M1 JumpThrow)", type: "smoke" }],
+		  bank2: [{ img: "images/overpass/6.png", desc: "From Short → Smoke Bank (M1 JumpThrow)", type: "smoke" }, { img: "images/overpass/7.png", desc: "From Short → Smoke Bins (M1 JumpThrow)", type: "smoke" }],
+		  toilets1: [{ img: "images/overpass/8.png", desc: "From T-Spawn → Smoke Toilets (M1 JumpThrow)", type: "smoke" }],
+		  walkway1: [{ img: "images/overpass/9.png", desc: "From Water → Smoke Walkway (M1 Throw)", type: "smoke" }, { img: "images/overpass/10.png", desc: "From Water → Smoke Window (M1 JumpThrow)", type: "smoke" }],
+		  water1: [{ img: "images/overpass/2.png", desc: "From Connector → Flash Water (M1 Throw)", type: "flash" }]
+        },
+        icons: [
+          { pos: "bsite1", top: "40%", left: "70%" },
+		  { pos: "bank1", top: "40%", left: "70%" },
+		  { pos: "window1", top: "40%", left: "70%" },
+		  { pos: "bank2", top: "40%", left: "70%" },
+		  { pos: "toilets1", top: "40%", left: "70%" },
+		  { pos: "walkway1", top: "40%", left: "70%" },
+		  { pos: "water1", top: "40%", left: "70%" }
+        ]
+      },
+	  nuke: {
+        radar: "images/nuke/nukeradar.png",
+        lineups: {
+          garage1: [{ img: "images/nuke/2.png", desc: "From T-Spawn → Smoke Garage (M1 JumpThrow)", type: "smoke" }, { img: "images/nuke/3.png", desc: "From T-Spawn → Smoke Secret#1 (M1 JumpThrow)", type: "smoke" }, { img: "images/nuke/4.png", desc: "From T-Spawn → Smoke Secret#2 (M1 JumpThrow)", type: "smoke" }],
+		  door1: [{ img: "images/nuke/1.png", desc: "From Lobby → Nade to break Door (M1+W Throw)", type: "nade" }],
+        },
+        icons: [
+          { pos: "garage1", top: "40%", left: "70%" },
+		  { pos: "door1", top: "40%", left: "70%" }
+        ]
+      }
     };
 
-    let currentFilter = "smoke"; // default filter
+    let currentMap = "mirage";
+    let currentFilter = "smoke";
+
+    function setMap(map) {
+      currentMap = map;
+      renderMap();
+    }
 
     function setFilter(type) {
       currentFilter = type;
       closePopup();
+      renderMap();
+    }
 
-      // Show only icons matching the filter
-      document.querySelectorAll(".icon").forEach(icon => {
-        const pos = icon.getAttribute("data-position");
-        const hasLineup = lineups[pos] && lineups[pos].some(l => l.type === currentFilter);
-        icon.style.display = hasLineup ? "block" : "none";
+    function renderMap() {
+      const container = document.getElementById("map-container");
+      container.innerHTML = ""; 
+
+      const mapData = maps[currentMap];
+      if (!mapData) return;
+
+      const radar = document.createElement("img");
+      radar.src = mapData.radar;
+      container.appendChild(radar);
+
+      mapData.icons.forEach(iconData => {
+        const hasLineup = mapData.lineups[iconData.pos]?.some(l => l.type === currentFilter);
+        if (!hasLineup) return;
+
+        const icon = document.createElement("div");
+        icon.className = "icon";
+        icon.style.top = iconData.top;
+        icon.style.left = iconData.left;
+        icon.setAttribute("data-position", iconData.pos);
+        icon.onclick = () => showPopup(iconData.pos);
+        container.appendChild(icon);
       });
     }
 
     function showPopup(position) {
       const popup = document.getElementById("popup");
       const content = document.getElementById("popup-content");
+      const mapData = maps[currentMap];
 
       content.innerHTML = "";
 
-      if (lineups[position]) {
-        lineups[position]
+      if (mapData.lineups[position]) {
+        mapData.lineups[position]
           .filter(l => l.type === currentFilter)
           .forEach(l => {
             const wrapper = document.createElement("div");
@@ -240,24 +370,19 @@
         if (!content.hasChildNodes()) {
           content.innerHTML = "<p>No lineups for this utility type.</p>";
         }
-      } else {
-        content.innerHTML = "<p>No lineups yet.</p>";
       }
 
       popup.style.display = "block";
     }
 
     function closePopup() {
-      const popup = document.getElementById("popup");
-      popup.style.display = "none";
-
+      document.getElementById("popup").style.display = "none";
       document.querySelectorAll(".popup-content img.zoomed").forEach(img => {
         img.classList.remove("zoomed");
       });
     }
 
-    // Run filter once at start
-    setFilter(currentFilter);
+    renderMap();
   </script>
 </body>
 </html>
